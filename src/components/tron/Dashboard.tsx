@@ -135,7 +135,7 @@ const Dashboard = (props: DashboardProps) => {
                 hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent transition hover:duration-200'
                     disabled={!myAddress || !apiKey}
                     onClick={toDisplayUploader}>
-                    Batch Transaction (USDT)
+                    Batch TRC20 Transaction (USDT)
                 </Button>
             </section>
             {!!state.displayCheckAddr &&
