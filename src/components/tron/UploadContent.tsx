@@ -6,18 +6,20 @@ interface UploadContentProps {
     submitSend: () => Promise<void>;
     submitCheck: () => Promise<void>
     counter: number;
-    counterStart: boolean;
+    isCounterStart: boolean;
     isLoading: boolean;
     isChecking: boolean;
 }
 
 const UploadContent = (props: UploadContentProps) => {
-    const { contents, records, submitSend, submitCheck, counter, counterStart, isLoading, isChecking } = props;
+    const { contents, records, submitSend, submitCheck, counter, isCounterStart, isLoading, isChecking } = props;
 
     return (
-        <div className="flex flex-col gap-2" >
+        <div className="flex flex-col text-zinc-300 gap-2" >
             {contents.length > 0 && contents[0].ToAddress &&
                 <div>
+                    <div>* Remember to purchase or rent <strong>energy</strong> before initiating a TRC-20 transfer. Otherwise, the TRX will be burned. *</div>
+                    <p>Energy Estimation Website: <a href="https://energyfather.com/tron-energy-calculator" target="_blank">www.energyfather.com</a></p>
                     <Button className='bg-[dark-bg] w-full h-16 text-2xl border-zinc-700 bg-zinc-800 text-zinc-300 my-5
                     hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent transition hover:duration-200'
                         onClick={submitSend} disabled={isLoading}>
@@ -53,8 +55,8 @@ const UploadContent = (props: UploadContentProps) => {
                     <div className="grid grid-cols-3 gap-x-2 border-t-2" key={i}>
                         <p className="col-span-1 mt-2 truncate text-center">{item.id}</p>
                         <p className="col-span-1 mt-2 truncate text-center">{item.txID}</p>
-                        {item.status == "success" ?
-                            <p className="col-span-1 mt-2 text-center">Transaction created</p>
+                        {item.status == "created" ?
+                            <p className="col-span-1 mt-2 text-center">Transaction was created</p>
                             :
                             <p className="col-span-1 mt-2 text-center text-red-600">Failed - {item.status}</p>
                         }
@@ -65,9 +67,9 @@ const UploadContent = (props: UploadContentProps) => {
             {contents.length > 0 && contents[0].txID &&
                 <Button className='bg-[dark-bg] w-full h-16 text-2xl border-zinc-700 bg-zinc-800 text-zinc-300 mt-10
                     hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent transition hover:duration-200'
-                    onClick={submitCheck} disabled={counterStart}>
+                    onClick={submitCheck} disabled={isCounterStart}>
                     {!isChecking ?
-                        counterStart ?
+                        isCounterStart ?
                             `Check Transaction Status - ${counter}`
                             :
                             "Check Transaction Status"

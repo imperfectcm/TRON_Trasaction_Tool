@@ -1,20 +1,21 @@
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
     FormField,
     FormItem,
     FormMessage,
-} from "@/components/ui/form"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 interface PrivateKeyAreaProps {
     privateKey: string | null;
     setPrivateKey: React.Dispatch<React.SetStateAction<string | null>>;
 }
+
 const PrivateKeyArea = (props: PrivateKeyAreaProps) => {
     const { privateKey, setPrivateKey } = props;
     function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -38,10 +39,13 @@ const PrivateKeyArea = (props: PrivateKeyAreaProps) => {
                         control={form.control}
                         name="privateKey"
                         render={({ field }) => (
-                            <FormItem className="lg:col-span-8">
+                            <FormItem className="relative lg:col-span-8">
                                 <FormControl>
                                     {!privateKey ?
-                                        <Input className="focus:border-[#FFFF80]" placeholder="Enter your private key" {...field} />
+                                        <>
+                                            <Input className="tron-input" placeholder="Enter your private key" {...field} />
+                                            <span className="tron-input-border tron-input-border-alt"></span>
+                                        </>
                                         :
                                         <Input disabled type="password" value={privateKey} />
                                     }

@@ -13,13 +13,14 @@ import { z } from "zod"
 import { tronCheckAddress } from "./actions"
 
 interface CheckAddressFormProps {
-    setResult: React.Dispatch<React.SetStateAction<any>>;
+    dispatch: React.Dispatch<any>;
 }
+
 const CheckAddressForm = (props: CheckAddressFormProps) => {
-    const { setResult } = props;
+    const { dispatch } = props;
     async function onSubmit(data: z.infer<typeof FormSchema>) {
         const res = await tronCheckAddress(data.address);
-        setResult(res);
+        dispatch({ type: 'SET_RESULT', payload: { result: res } })
         return;
     }
     const FormSchema = z.object({
@@ -40,9 +41,12 @@ const CheckAddressForm = (props: CheckAddressFormProps) => {
                         control={form.control}
                         name="address"
                         render={({ field }) => (
-                            <FormItem className="lg:col-start-3 lg:col-span-4">
+                            <FormItem className="relative lg:col-start-3 lg:col-span-4">
                                 <FormControl>
-                                    <Input className="focus:border-[#FFFF80]" placeholder="Enter TRON address to check" {...field} />
+                                    <>
+                                        <Input className="tron-input" placeholder="Enter TRON address to check" {...field} />
+                                        <span className="tron-input-border tron-input-border-alt"></span>
+                                    </>
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

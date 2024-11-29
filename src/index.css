@@ -8,14 +8,21 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: var(--light-grey-color);
-  background-color: var(--dark-grey-color);
+  /* color: var(--light-grey-color);
+  background-color: var(--dark-grey-color); */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  overflow-x: hidden;
+
+  scrollbar-color: rgb(113 113 122) transparent;
+  scrollbar-width: thin;
 }
+
+
 
 @media only screen and (max-width: 1024px) {
   ::-webkit-scrollbar {
@@ -56,10 +63,6 @@ button {
   background-color: var();
   cursor: pointer;
   transition: border-color 0.25s;
-}
-
-button:hover {
-  border-color: #646cff;
 }
 
 button:focus,
@@ -149,4 +152,63 @@ button:focus-visible {
   -webkit-box-shadow: 0rem 0rem 0.7rem #FFFF80;
   box-shadow: 0rem 0rem 0.7rem #FFFF80;
   transition: 200ms;
+}
+
+.btn-roll {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.btn-roll-bg {
+  background: linear-gradient(to top, #242113, #4e4721, #998833);
+}
+
+.btn-roll span {
+  transition: top 0.5s;
+}
+
+.btn-text-one {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.btn-text-two {
+  position: absolute;
+  width: 100%;
+  top: 150%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.btn-roll:hover .btn-text-one {
+  top: -100%;
+}
+
+.btn-roll:hover .btn-text-two {
+  top: 50%;
+}
+
+.tron-input-border {
+  position: absolute;
+  width: 0%;
+  bottom: 0;
+  left: 0;
+  transition: width 0.3s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+}
+
+.tron-input:focus+.tron-input-border {
+  width: 100%;
+}
+
+.tron-input-border-alt {
+  height: 0.1rem;
+  background: linear-gradient(90deg, #858534 0%, #FFFF80 50%, #ffffb5 100%);
+  transition: width 0.4s cubic-bezier(0.42, 0, 0.58, 1.00);
 }

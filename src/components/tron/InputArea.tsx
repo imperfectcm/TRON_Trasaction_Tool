@@ -1,47 +1,38 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import Adapter from "./Adapter"
-import { useState } from "react"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import Adapter from "./Adapter";
+import { useState } from "react";
+import toast, { Toaster } from 'react-hot-toast';
 
 interface InputAreaProps {
     myAddress: string;
     setMyAddress: React.Dispatch<React.SetStateAction<string>>;
     connect: boolean;
     setConnect: React.Dispatch<React.SetStateAction<boolean>>;
-    wallet: any;
     setWallet: React.Dispatch<React.SetStateAction<any>>;
     apiKey: string;
     setApiKey: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const InputArea = (props: InputAreaProps) => {
-    const { myAddress, setMyAddress, connect, setConnect, wallet, setWallet, apiKey, setApiKey } = props;
+    const { myAddress, setMyAddress, connect, setConnect, setWallet, apiKey, setApiKey } = props;
     const [hasInfo, setHasInfo] = useState<boolean>(false);
 
-    let FormSchema: any;
-    !connect ? FormSchema = z.object({
-        address: z.string().length(34, {
-            message: `TRON address should start at letter "T" and consists 34 characters`,
-        }),
+    let FormSchema = z.object({
+        address: z.string(),
         apiKey: z.string(),
     })
-        :
-        FormSchema = z.object({
-            address: z.string(),
-            apiKey: z.string(),
-        })
     let form: any;
     !connect ?
         form = useForm<z.infer<typeof FormSchema>>({
@@ -55,13 +46,40 @@ const InputArea = (props: InputAreaProps) => {
         form = useForm<z.infer<typeof FormSchema>>({
             resolver: zodResolver(FormSchema),
         })
-
     function onSubmit(data: z.infer<typeof FormSchema>) {
-        if (!connect) {
-            setMyAddress(data.address);
+        if (!hasInfo) {
+            if (!connect) {
+                if (data.address.trim().length === 0 || data.address.length !== 34 || data.address[0] !== "T") {
+                    return toast.error('TRON Address should consists of 34 characters and start with "T"', {
+                        position: 'bottom-center',
+                        style: {
+                            border: '1px solid rgb(253 224 71)',
+                            padding: '1rem',
+                            color: 'rgb(212 212 216)',
+                            backgroundColor: 'rgb(24 24 27)',
+                        },
+                    });
+                }
+                setMyAddress(data.address);
+            }
+            if (data.apiKey.trim().length === 0) {
+                return toast.error('API Key is required', {
+                    position: 'bottom-center',
+                    style: {
+                        border: '1px solid rgb(253 224 71)',
+                        padding: '1rem',
+                        color: 'rgb(212 212 216)',
+                        backgroundColor: 'rgb(24 24 27)',
+                    },
+                });
+            }
+            setApiKey(data.apiKey);
+            setHasInfo(true);
+        } else {
+            setApiKey("");
+            setHasInfo(false);
+            return;
         }
-        setApiKey(data.apiKey);
-        setHasInfo(true);
     }
 
     return (
@@ -81,7 +99,7 @@ const InputArea = (props: InputAreaProps) => {
                         control={form.control}
                         name="address"
                         render={({ field }) => (
-                            <FormItem className="lg:col-span-3 flex flex-col items-start">
+                            <FormItem className="relative lg:col-span-3 flex flex-col items-start ">
                                 <FormLabel>Connect your wallet or enter your TRON address</FormLabel>
                                 <FormControl >
                                     {hasInfo ?
@@ -90,7 +108,10 @@ const InputArea = (props: InputAreaProps) => {
                                         connect ?
                                             <Input value={myAddress} />
                                             :
-                                            <Input className="focus:border-[#FFFF80]" placeholder="Your TRON Adress" {...field} />
+                                            <>
+                                                <Input className="tron-input" placeholder="Your TRON Adress" {...field} />
+                                                <span className="tron-input-border tron-input-border-alt"></span>
+                                            </>
                                     }
                                 </FormControl>
                                 <FormMessage />
@@ -101,13 +122,16 @@ const InputArea = (props: InputAreaProps) => {
                         control={form.control}
                         name="apiKey"
                         render={({ field }) => (
-                            <FormItem className="lg:col-span-3 flex flex-col items-start">
-                                <FormLabel>Enter your api key</FormLabel>
+                            <FormItem className="relative lg:col-span-3 flex flex-col items-start">
+                                <FormLabel>Enter your API key</FormLabel>
                                 <FormControl>
                                     {hasInfo ?
                                         <Input disabled type="password" value={apiKey} />
                                         :
-                                        <Input className="focus:border-[#FFFF80]" placeholder="Your Api Key" {...field} />
+                                        <>
+                                            <Input className="tron-input" placeholder="Your Api Key" {...field} />
+                                            <span className="tron-input-border tron-input-border-alt"></span>
+                                        </>
                                     }
                                 </FormControl>
                                 <FormMessage />
@@ -115,14 +139,17 @@ const InputArea = (props: InputAreaProps) => {
                         )}
                     />
                     {hasInfo ?
-                        <Button disabled type="submit" className="col-span-1 hover-light">Submitted</Button>
+                        <Button className="btn-roll col-span-1 hover-light">
+                            <span className="btn-text-one">Submitted</span>
+                            <span className="btn-text-two">Unlock</span>
+                        </Button>
                         :
                         <Button type="submit" className="col-span-1 hover-light">Submit</Button>
                     }
                 </form>
             </Form>
+            <Toaster />
         </article>
-        // <Input type="address" placeholder="Your TRON Address" />
     )
 }
 

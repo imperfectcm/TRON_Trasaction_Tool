@@ -1,3 +1,4 @@
+// @ts-ignore
 import { TronWeb, utils as TronWebUtils, Trx, TransactionBuilder, Contract, Event, Plugin } from 'tronweb';
 import { Buffer } from 'buffer';
 
@@ -145,7 +146,7 @@ export const tronSendTRC20_USDT = async (myAddress: string, toAddress: string, a
         const tx = await tronWeb.transactionBuilder.triggerSmartContract(USDTContract, functionSelector, {}, parameter, tronWeb.address.toHex(myAddress));
         const signedTx = await tronWeb.trx.sign(tx.transaction);
         const res: any = await tronWeb.trx.sendRawTransaction(signedTx);
-        const response = { success: res.result, code: res.code, txID: res.txid }
+        const response = { created: res.result, code: res.code, txID: res.txid }
         return response;
     } catch (error) {
         console.log(error);

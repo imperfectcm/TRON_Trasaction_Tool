@@ -6,11 +6,12 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { tronGetBalance_TRX, tronGetBalance_USDT } from "./actions";
-import { useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import PrivateKeyArea from "./PrivateKeyArea";
 import CheckAddressForm from "./CheckAddressForm";
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import Uploader from "./Uploader";
+import { anyErrorToast, privateKeyErrorToast } from "./errorToast";
 
 interface DashboardProps {
     connect: boolean;
@@ -18,72 +19,91 @@ interface DashboardProps {
     wallet: any;
     apiKey: string;
 }
+interface DashboardState {
+    displayCheckAddr: boolean;
+    displayUploader: boolean;
+    result: any;
+}
+const initialState: DashboardState = {
+    displayCheckAddr: false,
+    displayUploader: false,
+    result: null,
+}
+const reducer = (state: DashboardState, action: any) => {
+    switch (action.type) {
+        case 'OPEN_ADDR_CHECKER':
+            return { ...state, displayCheckAddr: true, displayUploader: false, result: null }
+        case 'OPEN_UPLOADER':
+            return { ...state, displayUploader: true, displayCheckAddr: false, result: null }
+        case 'OPEN_BALANCE':
+            return { displayCheckAddr: false, displayUploader: false, result: null }
+        case 'SET_RESULT':
+            return { ...state, result: action.payload.result }
+        default:
+            return state;
+    }
+}
 
 const Dashboard = (props: DashboardProps) => {
     const { connect, myAddress, wallet, apiKey } = props;
     const [privateKey, setPrivateKey] = useState<string | null>(null);
-    const [displayCheckAddr, setDisplayCheckAddr] = useState<boolean>(false);
-    const [displayUploader, setDisplayUploader] = useState<boolean>(false);
-    const [result, setResult] = useState<any>(null);
-    const network = wallet?.adapter?.name || "";
-
-    const privateKeyErrorToast = () => {
-        return toast.error('Enter private key to do this action', {
-            position: 'bottom-center',
-            style: {
-                border: '1px solid rgb(253 224 71)',
-                padding: '1rem',
-                color: 'rgb(212 212 216)',
-                backgroundColor: 'rgb(24 24 27)',
-            },
-        });
-    }
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const network: string = useMemo(() => { return wallet?.adapter?.name || ""; }, [wallet?.adapter])
+    useEffect(() => {
+        setPrivateKey(null)
+    }, [apiKey])
+    // Functions
     const getTRXBalance = async () => {
-        if (!!displayCheckAddr) setDisplayCheckAddr(false);
-        if (!!displayUploader) setDisplayUploader(false);
-        const res = await tronGetBalance_TRX(myAddress, apiKey, network)
-        setResult(res);
+        if (!!state.displayUploader || !!state.displayCheckAddr) dispatch({ type: 'OPEN_BALANCE' });
+        try {
+            const res = await tronGetBalance_TRX(myAddress, apiKey, network);
+            dispatch({ type: 'SET_RESULT', payload: { result: res } });
+        } catch (error: any) {
+            console.log(error);
+            anyErrorToast(error.message);
+        }
         return;
     }
     const getUSDTBalance = async () => {
         if (!privateKey) return privateKeyErrorToast();
-        if (!!displayCheckAddr) setDisplayCheckAddr(false);
-        if (!!displayUploader) setDisplayUploader(false);
-        const res = await tronGetBalance_USDT(myAddress, apiKey, privateKey, network)
-        setResult(res);
+        if (!!state.displayUploader || !!state.displayCheckAddr) dispatch({ type: 'OPEN_BALANCE' });
+        try {
+            const res = await tronGetBalance_USDT(myAddress, apiKey, privateKey, network);
+            dispatch({ type: 'SET_RESULT', payload: { result: res } });
+        } catch (error: any) {
+            console.log(error);
+            anyErrorToast(error.message);
+        }
         return;
     }
     const toDisplayInput = async () => {
-        if (!!result) setResult(null);
-        if (!!displayUploader) setDisplayUploader(false);
-        if (!displayCheckAddr) setDisplayCheckAddr(true);
+        if (!state.displayCheckAddr) dispatch({ type: 'OPEN_ADDR_CHECKER' });
         return;
     }
     const toDisplayUploader = async () => {
         if (!privateKey) return privateKeyErrorToast();
-        if (!!result) setResult(null);
-        if (!!displayCheckAddr) setDisplayCheckAddr(false);
-        if (!displayUploader) setDisplayUploader(true);
+        if (!state.displayUploader) dispatch({ type: 'OPEN_UPLOADER' });
         return;
     }
+
     return (
         <article className="w-screen min-w-96 px-10">
-            <Card className="w-full grid lg:grid-cols-4 justify-center p-5 mb-5 rounded-lg border-zinc-700 bg-[dark-bg] 
+            <Card className="w-full grid lg:grid-cols-4 justify-center p-5 mb-5 rounded-lg text-zinc-300 border-zinc-700 bg-[dark-bg] 
             hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent duration-200">
                 <CardHeader>
-                    <CardTitle className="text-zinc-300">Wallet Connection Status:</CardTitle>
+                    <CardTitle>Wallet Connection Status:</CardTitle>
                     <CardDescription className="text-zinc-500">{connect ? 'Connected' : 'Disconnected'}</CardDescription>
                 </CardHeader>
                 <CardHeader>
-                    <CardTitle className="text-zinc-300">Your Selected Wallet:</CardTitle>
-                    <CardDescription className="text-zinc-500">{wallet ? wallet.adapter.name : ""}</CardDescription>
+                    <CardTitle>Your Selected Wallet:</CardTitle>
+                    <CardDescription className="text-zinc-500">{wallet ? network : ""}</CardDescription>
                 </CardHeader>
                 <CardHeader>
-                    <CardTitle className="text-zinc-300">Your TRON Address:</CardTitle>
+                    <CardTitle>Your TRON Address:</CardTitle>
                     <CardDescription className="text-zinc-500">{myAddress}</CardDescription>
                 </CardHeader>
                 <CardHeader>
-                    <CardTitle className="text-zinc-300">Your API Key:</CardTitle>
+                    <CardTitle>Your API Key:</CardTitle>
                     <CardDescription className="text-zinc-500">{apiKey}</CardDescription>
                 </CardHeader>
             </Card>
@@ -118,15 +138,15 @@ const Dashboard = (props: DashboardProps) => {
                     Batch Transaction (USDT)
                 </Button>
             </section>
-            {!!displayCheckAddr &&
-                <CheckAddressForm setResult={setResult} />
+            {!!state.displayCheckAddr &&
+                <CheckAddressForm dispatch={dispatch} />
             }
-            {!!displayUploader && !!privateKey &&
+            {!!state.displayUploader && !!privateKey &&
                 <Uploader myAddress={myAddress} apiKey={apiKey} privateKey={privateKey} network={network} />
             }
-            {!!result &&
+            {!!state.result &&
                 <section className="text-zinc-300">
-                    {result}
+                    {state.result}
                 </section>
             }
             <Toaster />

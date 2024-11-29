@@ -12,13 +12,12 @@ function App() {
   const [apiKey, setApiKey] = useState<string>("");
   return (
     <QueryClientProvider client={queryClient}>
-      <main className='py-5'>
+      <main className='text-zinc-300 py-5'>
         <InputArea
           myAddress={myAddress}
           setMyAddress={setMyAddress}
           connect={connect}
           setConnect={setConnect}
-          wallet={wallet}
           setWallet={setWallet}
           apiKey={apiKey}
           setApiKey={setApiKey}
