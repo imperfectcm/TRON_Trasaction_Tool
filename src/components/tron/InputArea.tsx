@@ -83,8 +83,8 @@ const InputArea = (props: InputAreaProps) => {
     }
 
     return (
-        <article className="w-screen min-w-96 px-10 mb-5 grid lg:grid-cols-9 gap-2">
-            <div className="col-span-2 flex items-end">
+        <article className="w-screen min-w-96 px-5 lg:px-10 mb-5 grid lg:grid-cols-9 gap-2">
+            <div className="lg:col-span-2 flex items-end">
                 <Adapter
                     setMyAddress={setMyAddress}
                     setConnect={setConnect}
@@ -94,7 +94,7 @@ const InputArea = (props: InputAreaProps) => {
                 />
             </div>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="col-span-7 grid lg:grid-cols-7 gap-2 items-end">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="lg:col-span-7 grid lg:grid-cols-7 gap-2 items-end">
                     <FormField
                         control={form.control}
                         name="address"
@@ -123,7 +123,7 @@ const InputArea = (props: InputAreaProps) => {
                         name="apiKey"
                         render={({ field }) => (
                             <FormItem className="relative lg:col-span-3 flex flex-col items-start">
-                                <FormLabel>Enter your API key</FormLabel>
+                                <FormLabel>Enter your API key &nbsp;&nbsp;(Create API key on <a href="https://www.trongrid.io/" target="_blank">TronGrid</a> )</FormLabel>
                                 <FormControl>
                                     {hasInfo ?
                                         <Input disabled type="password" value={apiKey} />

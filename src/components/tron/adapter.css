@@ -22,6 +22,12 @@
     transition: 200ms;
 }
 
+@media only screen and (max-width: 768px) {
+    .adapter-react-button {
+        margin-bottom: 10px;
+    }
+}
+
 .adapter-react-button:focus {
     outline: none;
 }
