@@ -87,7 +87,7 @@ const Dashboard = (props: DashboardProps) => {
     }
 
     return (
-        <article className="w-screen min-w-96 px-10">
+        <article className="w-screen min-w-96 px-5 lg:px-10">
             <Card className="w-full grid lg:grid-cols-4 justify-center p-5 mb-5 rounded-lg text-zinc-300 border-zinc-700 bg-[dark-bg] 
             hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent duration-200">
                 <CardHeader>
