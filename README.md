@@ -1,51 +1,25 @@
-# React + TypeScript + Vite
+React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# TRON Transaction Tool
+The TRON Transaction Tool is an application that facilitates batch TRON TRC20 transactions.
 
-Currently, two official plugins are available:
+To get started, you'll need to create an API key and connect it to your wallet.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- TRON Wallet Browser Extension: Refer to TronLink.org for guidance on setting up the TRON wallet browser extension.
+- TRON API Key: Learn how to create a TRON API key at TronGrid.io.
+- My fly.io Instance Website: Visit https://tron-transaction-tool.fly.dev/ for my instance of the website.
 
-## Expanding the ESLint configuration
+# Cloning the Project
+If you intend to clone the project, it also works in a localhost environment.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Yarn Install
+Execute `yarn install` to install the necessary dependencies.
 
-- Configure the top-level `parserOptions` property like this:
+## Update vite.config.ts
+In `vite.config.ts`, locate the `server`configuration and modify it to `server: { strictPort: true, port: 4173 }`.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Yarn Dev
+Run `yarn dev` to start the application.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
-# TRON_Trasaction_Tool
+## Access the Localhost URL
+Access the application at `http://localhost:4173/` in your browser.
