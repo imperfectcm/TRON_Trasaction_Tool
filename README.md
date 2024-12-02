@@ -15,6 +15,9 @@ Visit https://tron-transaction-tool.fly.dev/ for my instance of the website.
 
 # Cloning the Project
 If you intend to clone the project, it also works in a localhost environment.
+```bash
+git clone git@github.com:imperfectcm/TRON_Trasaction_Tool.git
+```
 
 ## Yarn Install
 Execute `yarn install` to install the necessary dependencies.
