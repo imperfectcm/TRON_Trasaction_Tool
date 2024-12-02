@@ -18,7 +18,7 @@ const UploadContent = (props: UploadContentProps) => {
         <div className="flex flex-col text-zinc-300 gap-2" >
             {contents.length > 0 && contents[0].ToAddress &&
                 <div>
-                    <div>* Remember to purchase or rent <strong>energy</strong> before initiating a TRC-20 transfer. Otherwise, the TRX will be burned. *</div>
+                    <div>* Make sure to purchase or rent <strong>energy</strong> before initiating a TRC-20 transfer. Otherwise, the TRX will be burned. *</div>
                     <p>Energy Estimation Website: <a href="https://energyfather.com/tron-energy-calculator" target="_blank">www.energyfather.com</a></p>
                     <Button className='bg-[dark-bg] w-full h-16 text-2xl border-zinc-700 bg-zinc-800 text-zinc-300 my-5
                     hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent transition hover:duration-200'
