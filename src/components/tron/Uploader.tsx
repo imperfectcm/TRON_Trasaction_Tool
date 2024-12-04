@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Papa from 'papaparse';
 import { Button } from "@/components/ui/button";
 import { useMutation } from "react-query";
-import { tronCheckEvent, tronSendTRC20_USDT } from './actions';
+import { tronCheckAddress, tronCheckEvent, tronSendTRC20_USDT } from './actions';
 import UploadContent from './UploadContent';
 import { anyErrorToast } from './errorToast';
 
@@ -85,8 +85,18 @@ const Uploader = (props: UploaderProps) => {
         Papa.parse(event.target.files[0], {
             header: true,
             skipEmptyLines: true,
-            complete: async function (results) {
-                setContents(results.data)
+            complete: async function (results: Papa.ParseResult<any>) {
+                if (!results.data[0].ToAddress) return;
+                const items: any[] = [];
+                for await (let item of results.data) {
+                    const res = await tronCheckAddress(item.ToAddress)
+                    console.log(res)
+                    if (res == "❌ This is a INVALID TRON account, please try other.") {
+                        item.ToAddress = `${item.ToAddress} - INVALID TRON ACCOUNT`;
+                    }
+                    items.push(item);
+                }
+                setContents(items);
             },
         });
     };
