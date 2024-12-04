@@ -1,6 +1,7 @@
 // @ts-ignore
 import { TronWeb, utils as TronWebUtils, Trx, TransactionBuilder, Contract, Event, Plugin } from 'tronweb';
 import { Buffer } from 'buffer';
+import { anyErrorToast } from './errorToast';
 
 export const tronCheckAddress = async (address: string) => {
     try {
@@ -31,8 +32,9 @@ export const tronGetBalance_TRX = async (myAddress: string, apiKey: string, netw
         const res = await tronWeb.trx.getBalance(myAddress);
         const response = `Available account balance: ${res / 1000000} TRX`
         return response;
-    } catch (err) {
-        console.error(err);
+    } catch (error: any) {
+        console.error(error);
+        if (error.response.data.Error) { anyErrorToast(error.response.data.Error); } else { anyErrorToast("Some setting might be wrong"); }
         return null;
     }
 }
@@ -81,8 +83,9 @@ export const tronGetBalance_USDT = async (myAddress: string, apiKey: string, pri
         let res = await contract.balanceOf(myAddress).call();
         const response = `Available account balance: ${((~~res.toString(10)) / 1000000)} USDT`;
         return response;
-    } catch (error) {
+    } catch (error: any) {
         console.log(error);
+        if (error.response.data.Error) { anyErrorToast(error.response.data.Error); } else { anyErrorToast("Some setting might be wrong"); }
         return null;
     }
 }
@@ -148,8 +151,9 @@ export const tronSendTRC20_USDT = async (myAddress: string, toAddress: string, a
         const res: any = await tronWeb.trx.sendRawTransaction(signedTx);
         const response = { created: res.result, code: res.code, txID: res.txid }
         return response;
-    } catch (error) {
+    } catch (error: any) {
         console.log(error);
+        if (error.response.data.Error) { anyErrorToast(error.response.data.Error); } else { anyErrorToast("Some setting might be wrong"); }
         return null;
     }
 }

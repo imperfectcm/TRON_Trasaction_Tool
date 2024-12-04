@@ -61,7 +61,6 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    --background: rgb(24 24 27);
     --foreground: 0 0% 98%;
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
@@ -95,7 +94,6 @@ button:focus-visible {
 
 @layer base {
   :root {
-    --background: rgb(24 24 27);
     --foreground: 0 0% 98%;
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
