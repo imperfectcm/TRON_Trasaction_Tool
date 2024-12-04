@@ -39,7 +39,11 @@ const UploadContent = (props: UploadContentProps) => {
             {contents.length > 0 && contents[0].ToAddress && contents.map((item, i) =>
                 <div className="grid grid-cols-3 gap-x-2 border-t-2" key={i}>
                     <p className="col-span-1 mt-2">{item.id}</p>
-                    <p className="col-span-1 truncate mt-2">{item.ToAddress}</p>
+                    {item.ToAddress.includes("INVALID TRON ACCOUNT") ?
+                        <p className="col-span-1 truncate mt-2 text-red-600">{item.ToAddress}</p>
+                        :
+                        <p className="col-span-1 truncate mt-2">{item.ToAddress}</p>
+                    }
                     <p className="col-span-1 mt-2 truncate">{item.USDT}</p>
                 </div>
             )}
