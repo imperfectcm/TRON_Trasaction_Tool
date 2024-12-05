@@ -24,6 +24,6 @@ dist-ssr
 *.sw?
 
 fly.toml
-/Dockerfile
+Dockerfile
 .github
 .dockerignore

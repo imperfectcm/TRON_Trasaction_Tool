@@ -91,7 +91,11 @@ const Uploader = (props: UploaderProps) => {
                 for await (let item of results.data) {
                     const res = await tronCheckAddress(item.ToAddress)
                     if (res == "❌ This is a INVALID TRON account, please try other.") {
+                        item.ToAddress.includes(" ") ?
+                        item.ToAddress = `${item.ToAddress} - INVALID TRON ACCOUNT (Check space)`
+                        :
                         item.ToAddress = `${item.ToAddress} - INVALID TRON ACCOUNT`;
+
                     }
                     item.USDT = await (item.USDT).replaceAll(",", "");
                     items.push(item);
