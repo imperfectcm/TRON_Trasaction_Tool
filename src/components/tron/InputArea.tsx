@@ -109,7 +109,7 @@ const InputArea = (props: InputAreaProps) => {
                                             <Input value={myAddress} />
                                             :
                                             <>
-                                                <Input className="tron-input" placeholder="Your TRON Adress" {...field} />
+                                                <Input className="tron-input" placeholder="Your TRON Address" {...field} />
                                                 <span className="tron-input-border tron-input-border-alt"></span>
                                             </>
                                     }

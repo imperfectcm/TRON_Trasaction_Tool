@@ -18,6 +18,7 @@ const Uploader = (props: UploaderProps) => {
     const [contents, setContents] = useState<any[]>([]);
     const [records, setRecords] = useState<any[]>([]);
     const [counter, setCounter] = useState<number>(10);
+    const [isTransfered, setIsTransfered] = useState<boolean>(false);
     const [isCounterStart, setIsCounterStart] = useState<boolean>(false);
     useEffect(() => {
         if (isCounterStart) {
@@ -90,20 +91,26 @@ const Uploader = (props: UploaderProps) => {
                 const items: any[] = [];
                 for await (let item of results.data) {
                     const res = await tronCheckAddress(item.ToAddress)
-                    console.log(res)
                     if (res == "❌ This is a INVALID TRON account, please try other.") {
                         item.ToAddress = `${item.ToAddress} - INVALID TRON ACCOUNT`;
                     }
+                    item.USDT = await (item.USDT).replaceAll(",", "");
                     items.push(item);
                 }
                 setContents(items);
             },
         });
     };
+    const cancelUpload = () => {
+        setContents([]);
+    }
     return (
         <section>
             {contents.length <= 0 && records.length <= 0 ?
                 <>
+                    <div>* Make sure to purchase or rent <strong>energy</strong> before initiating a TRC-20 transfer. Otherwise, the TRX will be burned. *</div>
+                    <p>Energy Estimation Website: <a href="https://energyfather.com/tron-energy-calculator" target="_blank">www.energyfather.com</a></p>
+                    <br />
                     <div className='text-zinc-300 mb-1'>* Need to follow the format of the .csv sample *</div>
                     <a href="USDT_TRC20_Transaction_Sample.csv">
                         <button className="btn-roll btn-roll-bg text-zinc-300 mb-10 w-40 h-12 
@@ -135,6 +142,7 @@ const Uploader = (props: UploaderProps) => {
             <UploadContent
                 contents={contents}
                 records={records}
+                cancelUpload={cancelUpload}
                 submitSend={submitSend}
                 submitCheck={submitCheck}
                 counter={counter}
