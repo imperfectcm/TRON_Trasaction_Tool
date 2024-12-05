@@ -1,8 +1,21 @@
 import { Button } from "@/components/ui/button";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 interface UploadContentProps {
     contents: any[];
     records: any[];
+    cancelUpload: () => void;
     submitSend: () => Promise<void>;
     submitCheck: () => Promise<void>
     counter: number;
@@ -12,23 +25,44 @@ interface UploadContentProps {
 }
 
 const UploadContent = (props: UploadContentProps) => {
-    const { contents, records, submitSend, submitCheck, counter, isCounterStart, isLoading, isChecking } = props;
+    const { contents, records, cancelUpload, submitSend, submitCheck, counter, isCounterStart, isLoading, isChecking } = props;
 
     return (
         <div className="flex flex-col text-zinc-300 gap-2" >
             {contents.length > 0 && contents[0].ToAddress &&
                 <div>
-                    <div>* Make sure to purchase or rent <strong>energy</strong> before initiating a TRC-20 transfer. Otherwise, the TRX will be burned. *</div>
-                    <p>Energy Estimation Website: <a href="https://energyfather.com/tron-energy-calculator" target="_blank">www.energyfather.com</a></p>
-                    <Button className='bg-[dark-bg] w-full h-16 text-2xl border-zinc-700 bg-zinc-800 text-zinc-300 my-5
-                    hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent transition hover:duration-200'
-                        onClick={submitSend} disabled={isLoading}>
-                        {!isLoading ?
-                            "Transfer"
-                            :
-                            "Accessing Transaction..."
-                        }
-                    </Button>
+                    <div className="grid lg:grid-cols-2 gap-2">
+                        <Button className='w-full h-16 text-2xl border-zinc-700 bg-zinc-800 text-zinc-300 my-5
+                        hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent transition hover:duration-200'
+                            onClick={cancelUpload} disabled={isLoading}>
+                            Cancel
+                        </Button>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button className='w-full h-16 text-2xl border-zinc-700 bg-zinc-800 text-zinc-300 my-5
+                                hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent transition hover:duration-200'
+                                    disabled={isLoading}>
+                                    {!isLoading ?
+                                        "Transfer"
+                                        :
+                                        "Accessing Transaction..."
+                                    }
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-md bg-zinc-900 flex flex-col justify-center items-center">
+                                <DialogHeader>
+                                    <DialogTitle>Transfer Confirmation</DialogTitle>
+                                </DialogHeader>
+                                <DialogDescription>Click the confirm button to proceed with the transaction.</DialogDescription>
+                                <DialogFooter className="flex items-center space-x-2">
+                                    <Button onClick={submitSend} className="border-zinc-700 bg-zinc-800 text-zinc-300 my-5
+                                    hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent transition hover:duration-200" >
+                                        Confirm
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
                     <div className="grid grid-cols-3 text-lg font-semibold">
                         <p className="col-span-1">ID:</p>
                         <p className="col-span-1">To Address:</p>
