@@ -18,7 +18,6 @@ const Uploader = (props: UploaderProps) => {
     const [contents, setContents] = useState<any[]>([]);
     const [records, setRecords] = useState<any[]>([]);
     const [counter, setCounter] = useState<number>(10);
-    const [isTransfered, setIsTransfered] = useState<boolean>(false);
     const [isCounterStart, setIsCounterStart] = useState<boolean>(false);
     useEffect(() => {
         if (isCounterStart) {
