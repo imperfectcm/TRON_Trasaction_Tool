@@ -39,7 +39,6 @@ const Adapter = (props: AdapterProps) => {
 }
 
 function ConnectComponent({ setMyAddress, setConnect, setWallet, setApiKey, setHasInfo }: any) {
-    // const { connect, disconnect, select, connected } = useWallet();
     const { address, connected, disconnect, wallet } = useWallet();
     useEffect(() => {
         address ? setMyAddress(address) : setMyAddress("");

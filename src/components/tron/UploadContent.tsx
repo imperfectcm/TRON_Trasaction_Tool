@@ -52,9 +52,9 @@ const UploadContent = (props: UploadContentProps) => {
                                 </DialogHeader>
                                 <DialogDescription>Click the confirm button to proceed with the transaction.</DialogDescription>
                                 <DialogFooter className="flex items-center space-x-2">
-                                    <Button onClick={submitSend} className="border-zinc-700 bg-zinc-800 text-zinc-300 my-5
+                                    <Button onClick={submitSend} disabled={isLoading} className="border-zinc-700 bg-zinc-800 text-zinc-300 my-5
                                     hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent transition hover:duration-200" >
-                                        Confirm
+                                        {!isLoading ? "Confirm" : "Transfering..."}
                                     </Button>
                                 </DialogFooter>
                             </DialogContent>
