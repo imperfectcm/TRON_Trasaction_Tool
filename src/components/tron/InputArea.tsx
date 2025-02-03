@@ -12,58 +12,46 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Adapter from "./Adapter";
-import { useState } from "react";
 import toast, { Toaster } from 'react-hot-toast';
+import { useProfileStore } from "@/utils/store";
 
-interface InputAreaProps {
-    myAddress: string;
-    setMyAddress: React.Dispatch<React.SetStateAction<string>>;
-    connect: boolean;
-    setConnect: React.Dispatch<React.SetStateAction<boolean>>;
-    setWallet: React.Dispatch<React.SetStateAction<any>>;
-    apiKey: string;
-    setApiKey: React.Dispatch<React.SetStateAction<string>>;
-}
-
-const InputArea = (props: InputAreaProps) => {
-    const { myAddress, setMyAddress, connect, setConnect, setWallet, apiKey, setApiKey } = props;
-    const [hasInfo, setHasInfo] = useState<boolean>(false);
+const InputArea = () => {
+    const { senderAddress, setSenderAddress, isConnected, apiKey, setApiKey, hasInfo, setHasInfo } = useProfileStore();
 
     let FormSchema = z.object({
         address: z.string(),
         apiKey: z.string(),
     })
     let form: any;
-    !connect ?
-        form = useForm<z.infer<typeof FormSchema>>({
+
+    form = isConnected ?
+        useForm<z.infer<typeof FormSchema>>({
+            resolver: zodResolver(FormSchema),
+            defaultValues: {
+                address: senderAddress,
+            },
+        })
+        :
+        useForm<z.infer<typeof FormSchema>>({
             resolver: zodResolver(FormSchema),
             defaultValues: {
                 address: "",
                 apiKey: "",
             },
         })
-        :
-        form = useForm<z.infer<typeof FormSchema>>({
-            resolver: zodResolver(FormSchema),
-        })
+
     function onSubmit(data: z.infer<typeof FormSchema>) {
-        if (!hasInfo) {
-            if (!connect) {
-                if (data.address.trim().length === 0 || data.address.length !== 34 || data.address[0] !== "T") {
-                    return toast.error('TRON Address should consists of 34 characters and start with "T"', {
-                        position: 'bottom-center',
-                        style: {
-                            border: '1px solid rgb(253 224 71)',
-                            padding: '1rem',
-                            color: 'rgb(212 212 216)',
-                            backgroundColor: 'rgb(24 24 27)',
-                        },
-                    });
-                }
-                setMyAddress(data.address);
-            }
-            if (data.apiKey.trim().length === 0) {
-                return toast.error('API Key is required', {
+        // unlock apikey input
+        if (hasInfo) {
+            setApiKey("");
+            setHasInfo(false);
+            return;
+        }
+
+        // custom adderss and apikey input
+        if (!isConnected) {
+            if (data.address.trim().length === 0 || data.address.length !== 34 || data.address[0] !== "T") {
+                return toast.error('TRON Address should consists of 34 characters and start with "T"', {
                     position: 'bottom-center',
                     style: {
                         border: '1px solid rgb(253 224 71)',
@@ -73,25 +61,30 @@ const InputArea = (props: InputAreaProps) => {
                     },
                 });
             }
-            setApiKey(data.apiKey);
-            setHasInfo(true);
-        } else {
-            setApiKey("");
-            setHasInfo(false);
-            return;
+            setSenderAddress(data.address);
         }
+
+        // check apikey input format
+        if (data.apiKey.trim().length === 0) {
+            return toast.error('API Key is required', {
+                position: 'bottom-center',
+                style: {
+                    border: '1px solid rgb(253 224 71)',
+                    padding: '1rem',
+                    color: 'rgb(212 212 216)',
+                    backgroundColor: 'rgb(24 24 27)',
+                },
+            });
+        }
+        setApiKey(data.apiKey);
+        setHasInfo(true);
+        return;
     }
 
     return (
         <article className="w-screen min-w-96 px-5 lg:px-10 mb-5 grid lg:grid-cols-9 gap-2">
             <div className="lg:col-span-2 flex items-end mb-3 lg:mb-0">
-                <Adapter
-                    setMyAddress={setMyAddress}
-                    setConnect={setConnect}
-                    setWallet={setWallet}
-                    setApiKey={setApiKey}
-                    setHasInfo={setHasInfo}
-                />
+                <Adapter />
             </div>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="lg:col-span-7 grid lg:grid-cols-7 gap-2 items-end">
@@ -103,10 +96,10 @@ const InputArea = (props: InputAreaProps) => {
                                 <FormLabel>Connect your wallet or enter your TRON address</FormLabel>
                                 <FormControl >
                                     {hasInfo ?
-                                        <Input disabled value={myAddress} />
+                                        <Input disabled value={senderAddress} />
                                         :
-                                        connect ?
-                                            <Input value={myAddress} />
+                                        isConnected ?
+                                            <Input disabled value={senderAddress} />
                                             :
                                             <>
                                                 <Input className="tron-input" placeholder="Your TRON Address" {...field} />

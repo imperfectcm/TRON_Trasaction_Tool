@@ -6,19 +6,14 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { tronGetBalance_TRX, tronGetBalance_USDT } from "./actions";
-import { useEffect, useMemo, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 import PrivateKeyArea from "./PrivateKeyArea";
 import CheckAddressForm from "./CheckAddressForm";
 import { Toaster } from 'react-hot-toast';
 import Uploader from "./Uploader";
 import { anyErrorToast, privateKeyErrorToast } from "./errorToast";
+import { useProfileStore } from "@/utils/store";
 
-interface DashboardProps {
-    connect: boolean;
-    myAddress: string;
-    wallet: any;
-    apiKey: string;
-}
 interface DashboardState {
     displayCheckAddr: boolean;
     displayUploader: boolean;
@@ -44,20 +39,28 @@ const reducer = (state: DashboardState, action: any) => {
     }
 }
 
-const Dashboard = (props: DashboardProps) => {
-    const { connect, myAddress, wallet, apiKey } = props;
-    const [privateKey, setPrivateKey] = useState<string | null>(null);
+const Dashboard = () => {
+    const { isConnected, senderAddress, wallet, apiKey, trxBalance, setTrxBalance, privateKey, setPrivateKey, network, setNetwork } = useProfileStore();
     const [state, dispatch] = useReducer(reducer, initialState);
-    const network: string = useMemo(() => { return wallet?.adapter?.name || ""; }, [wallet?.adapter])
+    useMemo(() => { return setNetwork(wallet?.adapter?.name || "") }, [wallet?.adapter]);
+
     useEffect(() => {
         setPrivateKey(null)
+        if (!apiKey) return;
+        (async () => {
+            const res = await tronGetBalance_TRX(senderAddress, apiKey, network);
+            if (!res) return;
+            setTrxBalance(res)
+        })()
+        return
     }, [apiKey])
+
     // Functions
     const getTRXBalance = async () => {
         if (!!state.displayUploader || !!state.displayCheckAddr) dispatch({ type: 'OPEN_BALANCE' });
         try {
-            const res = await tronGetBalance_TRX(myAddress, apiKey, network);
-            dispatch({ type: 'SET_RESULT', payload: { result: res } });
+            const res = await tronGetBalance_TRX(senderAddress, apiKey, network);
+            dispatch({ type: 'SET_RESULT', payload: { result: `Available account balance: ${res} TRX` } });
         } catch (error: any) {
             console.log(error);
             anyErrorToast(error.message);
@@ -68,8 +71,8 @@ const Dashboard = (props: DashboardProps) => {
         if (!privateKey) return privateKeyErrorToast();
         if (!!state.displayUploader || !!state.displayCheckAddr) dispatch({ type: 'OPEN_BALANCE' });
         try {
-            const res = await tronGetBalance_USDT(myAddress, apiKey, privateKey, network);
-            dispatch({ type: 'SET_RESULT', payload: { result: res } });
+            const res = await tronGetBalance_USDT(senderAddress, apiKey, privateKey, network);
+            dispatch({ type: 'SET_RESULT', payload: { result: `Available account balance: ${res} USDT` } });
         } catch (error: any) {
             console.log(error);
             anyErrorToast(error.message);
@@ -89,51 +92,51 @@ const Dashboard = (props: DashboardProps) => {
     return (
         <article className="w-screen min-w-96 px-5 lg:px-10">
             <Card className="w-full grid lg:grid-cols-4 justify-center p-5 mb-5 rounded-lg text-zinc-300 border-zinc-700 bg-[dark-bg] 
-            hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent duration-200">
+            hover:shadow-[0rem_0rem_0.7rem_#ff6c33] hover:border-transparent duration-200">
                 <CardHeader>
                     <CardTitle>Wallet Connection Status:</CardTitle>
-                    <CardDescription className="text-zinc-500">{connect ? 'Connected' : 'Disconnected'}</CardDescription>
+                    <CardDescription className="text-zinc-500">{isConnected ? 'Connected' : 'Disconnected'}</CardDescription>
                 </CardHeader>
                 <CardHeader>
-                    <CardTitle>Your Selected Wallet:</CardTitle>
+                    <CardTitle>Selected Wallet:</CardTitle>
                     <CardDescription className="text-zinc-500">{wallet ? network : ""}</CardDescription>
                 </CardHeader>
                 <CardHeader>
-                    <CardTitle>Your TRON Address:</CardTitle>
-                    <CardDescription className="text-zinc-500">{myAddress}</CardDescription>
+                    <CardTitle>TRON Address:</CardTitle>
+                    <CardDescription className="text-zinc-500">{senderAddress}</CardDescription>
                 </CardHeader>
                 <CardHeader>
-                    <CardTitle>Your API Key:</CardTitle>
-                    <CardDescription className="text-zinc-500">{apiKey}</CardDescription>
+                    <CardTitle>TRX Balance:</CardTitle>
+                    <CardDescription className="text-zinc-500">{apiKey ? `${trxBalance} TRX` : "-"}</CardDescription>
                 </CardHeader>
             </Card>
-            {!!myAddress && !!apiKey &&
+            {!!senderAddress && !!apiKey &&
                 <section>
-                    <PrivateKeyArea privateKey={privateKey} setPrivateKey={setPrivateKey} />
+                    <PrivateKeyArea />
                 </section>
             }
             <section className="grid lg:grid-cols-4 gap-2 mb-10">
                 <Button className='bg-[dark-bg] h-20 border-zinc-700 text-zinc-300
-                hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent transition hover:duration-200'
-                    disabled={!myAddress || !apiKey}
+                hover:shadow-[0rem_0rem_0.7rem_#ff6c33] hover:border-transparent transition hover:duration-200'
+                    disabled={!senderAddress || !apiKey}
                     onClick={toDisplayInput}>
                     Check Address
                 </Button>
                 <Button className='bg-[dark-bg] h-20 border-zinc-700 text-zinc-300
-                hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent transition hover:duration-200'
-                    disabled={!myAddress || !apiKey}
+                hover:shadow-[0rem_0rem_0.7rem_#ff6c33] hover:border-transparent transition hover:duration-200'
+                    disabled={!senderAddress || !apiKey}
                     onClick={getTRXBalance}>
                     Account Balance (TRX)
                 </Button>
                 <Button className='bg-[dark-bg] h-20 border-zinc-700 text-zinc-300
-                hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent transition hover:duration-200'
-                    disabled={!myAddress || !apiKey}
+                hover:shadow-[0rem_0rem_0.7rem_#ff6c33] hover:border-transparent transition hover:duration-200'
+                    disabled={!senderAddress || !apiKey}
                     onClick={getUSDTBalance}>
                     Account Balance (USDT)
                 </Button>
                 <Button className='bg-[dark-bg] h-20 border-zinc-700 text-zinc-300
-                hover:shadow-[0rem_0rem_0.7rem_#FFFF80] hover:border-transparent transition hover:duration-200'
-                    disabled={!myAddress || !apiKey}
+                hover:shadow-[0rem_0rem_0.7rem_#ff6c33] hover:border-transparent transition hover:duration-200'
+                    disabled={!senderAddress || !apiKey}
                     onClick={toDisplayUploader}>
                     Batch TRC20 Transaction (USDT)
                 </Button>
@@ -142,7 +145,7 @@ const Dashboard = (props: DashboardProps) => {
                 <CheckAddressForm dispatch={dispatch} />
             }
             {!!state.displayUploader && !!privateKey &&
-                <Uploader myAddress={myAddress} apiKey={apiKey} privateKey={privateKey} network={network} />
+                <Uploader />
             }
             {!!state.result &&
                 <section className="text-zinc-300">

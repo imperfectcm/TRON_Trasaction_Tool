@@ -46,10 +46,10 @@ module.exports = {
 					'5': 'hsl(var(--chart-5))'
 				},
 				'dark-bg': 'rgb(24 24 27)',
-				'light-yellow': '#FFFF80',
+				'light-yellow': '#ff6c33',
 			},
 			boxShadow: {
-				'light-yellow': '0rem 0rem 0.7rem #FFFF80',
+				'light-yellow': '0rem 0rem 0.7rem #ff6c33',
 			}
 		}
 	},

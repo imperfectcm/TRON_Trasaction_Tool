@@ -30,7 +30,7 @@ export const tronGetBalance_TRX = async (myAddress: string, apiKey: string, netw
     });
     try {
         const res = await tronWeb.trx.getBalance(myAddress);
-        const response = `Available account balance: ${res / 1000000} TRX`
+        const response = (res / 1000000);
         return response;
     } catch (error: any) {
         console.error(error);
@@ -81,7 +81,7 @@ export const tronGetBalance_USDT = async (myAddress: string, apiKey: string, pri
         ];
         let contract = await tronWeb.contract(abi, USDTContract);
         let res = await contract.balanceOf(myAddress).call();
-        const response = `Available account balance: ${((~~res.toString(10)) / 1000000)} USDT`;
+        const response = ((~~res.toString(10)) / 1000000);
         return response;
     } catch (error: any) {
         console.log(error);

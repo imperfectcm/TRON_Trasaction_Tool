@@ -5,17 +5,9 @@ import './adapter.css';
 import { WalletDisconnectedError, WalletError, WalletNotFoundError } from '@tronweb3/tronwallet-abstract-adapter';
 import toast from 'react-hot-toast';
 import { useEffect } from 'react';
+import { useProfileStore } from '@/utils/store';
 
-interface AdapterProps {
-    setMyAddress: React.Dispatch<React.SetStateAction<string>>;
-    setConnect: React.Dispatch<React.SetStateAction<boolean>>;
-    setWallet: React.Dispatch<React.SetStateAction<any>>;
-    setApiKey: React.Dispatch<React.SetStateAction<string>>;
-    setHasInfo: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const Adapter = (props: AdapterProps) => {
-    const { setMyAddress, setConnect, setWallet, setApiKey, setHasInfo } = props;
+const Adapter = () => {
     function onError(e: WalletError) {
         if (e instanceof WalletNotFoundError) {
             toast.error(e.message);
@@ -26,31 +18,30 @@ const Adapter = (props: AdapterProps) => {
     return (
         <WalletProvider onError={onError}>
             <WalletModalProvider>
-                <ConnectComponent
-                    setMyAddress={setMyAddress}
-                    setConnect={setConnect}
-                    setWallet={setWallet}
-                    setApiKey={setApiKey}
-                    setHasInfo={setHasInfo}>
+                <ConnectComponent>
                 </ConnectComponent>
             </WalletModalProvider>
-        </WalletProvider>
+        </WalletProvider >
     );
 }
 
-function ConnectComponent({ setMyAddress, setConnect, setWallet, setApiKey, setHasInfo }: any) {
+function ConnectComponent() {
+    const { setSenderAddress, setIsConnected, setWallet, setApiKey, setHasInfo, setTrxBalance } = useProfileStore();
     const { address, connected, disconnect, wallet } = useWallet();
     useEffect(() => {
-        address ? setMyAddress(address) : setMyAddress("");
-        connected ? setConnect(true) : setConnect(false);
+        address ? setSenderAddress(address) : setSenderAddress("");
+        connected ? setIsConnected(true) : setIsConnected(false);
         wallet ? setWallet(wallet) : setWallet("");
     }, [address, connected, wallet]);
     useEffect(() => {
         if (!connected) {
             setHasInfo(false);
-            setMyAddress("");
+            setSenderAddress("");
             setApiKey("");
+            setWallet("");
+            setTrxBalance(undefined)
         }
+        return;
     }, [disconnect]);
     return <WalletActionButton></WalletActionButton>;
 }

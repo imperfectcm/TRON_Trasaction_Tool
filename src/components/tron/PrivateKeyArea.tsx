@@ -10,15 +10,13 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useProfileStore } from "@/utils/store";
+import { anyErrorToast } from "./errorToast";
 
-interface PrivateKeyAreaProps {
-    privateKey: string | null;
-    setPrivateKey: React.Dispatch<React.SetStateAction<string | null>>;
-}
-
-const PrivateKeyArea = (props: PrivateKeyAreaProps) => {
-    const { privateKey, setPrivateKey } = props;
+const PrivateKeyArea = () => {
+    const { privateKey, setPrivateKey } = useProfileStore();
     function onSubmit(data: z.infer<typeof FormSchema>) {
+        if (data.privateKey.trim().length === 0) return anyErrorToast("Private key is empty.")
         setPrivateKey(data.privateKey);
     }
     const FormSchema = z.object({

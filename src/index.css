@@ -100,8 +100,8 @@ button:focus-visible {
 
 .hover-light:hover {
   border-color: transparent;
-  -webkit-box-shadow: 0rem 0rem 0.7rem #FFFF80;
-  box-shadow: 0rem 0rem 0.7rem #FFFF80;
+  -webkit-box-shadow: 0rem 0rem 0.7rem #ff6c33;
+  box-shadow: 0rem 0rem 0.7rem #ff6c33;
   transition: 200ms;
 }
 
@@ -115,7 +115,7 @@ button:focus-visible {
 }
 
 .btn-roll-bg {
-  background: linear-gradient(to top, #242113, #4e4721, #998833);
+  background: linear-gradient(to top, #76674e, #9d7840, #865711);
 }
 
 .btn-roll span {
@@ -160,6 +160,6 @@ button:focus-visible {
 
 .tron-input-border-alt {
   height: 0.1rem;
-  background: linear-gradient(90deg, #858534 0%, #FFFF80 50%, #ffffb5 100%);
+  background: linear-gradient(90deg, #bb3e0d 0%, #ff6c33 50%, #fd9065 100%);
   transition: width 0.4s cubic-bezier(0.42, 0, 0.58, 1.00);
 }
