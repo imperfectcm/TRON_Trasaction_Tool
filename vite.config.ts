@@ -13,9 +13,12 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 1500,
   },
+  preview: {
+    allowedHosts: ['tron-transaction-tool.fly.dev'],
+  },
   server: {
     host: true,
     strictPort: true,
     port: 4173
-  }
+  },
 })

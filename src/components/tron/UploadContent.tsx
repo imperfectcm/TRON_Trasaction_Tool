@@ -107,12 +107,14 @@ const UploadContent = (props: UploadContentProps) => {
                         <p className="col-span-1 mt-2 truncate text-center">{item.receiver && item.receiver}</p>
                         <p className="col-span-1 mt-2 truncate text-center">{item.amount && item.amount}</p>
                         <p className="relative col-span-2 mt-2 px-7 truncate text-center">
-                            {item.txID && item.txID}
-                            <span className="absolute h-full left-0 top-0">
-                                <Button className="p-[0.2rem] h-full bg-neutral-600"
-                                    onClick={() => { navigator.clipboard.writeText(item.txID) }}>
-                                    <Copy size={16} strokeWidth={1.25} />
-                                </Button>
+                            <span className="relative">
+                                {item.txID && item.txID}
+                                <span className="absolute h-full left-0 top-0 -translate-x-7">
+                                    <Button className="p-[0.2rem] h-full bg-neutral-600"
+                                        onClick={() => { navigator.clipboard.writeText(item.txID) }}>
+                                        <Copy size={16} strokeWidth={1.25} />
+                                    </Button>
+                                </span>
                             </span>
                         </p>
                         {
