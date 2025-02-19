@@ -1,8 +1,9 @@
-import './App.css'
+import './App.css';
+import './adapter.css';
 import { QueryClient, QueryClientProvider } from "react-query";
 const queryClient = new QueryClient();
-import Dashboard from './components/tron/Dashboard'
-import InputArea from './components/tron/InputArea';
+import Dashboard from './components/dashboard/Dashboard'
+import InputArea from './components/authentication/InputArea';
 
 function App() {
   return (

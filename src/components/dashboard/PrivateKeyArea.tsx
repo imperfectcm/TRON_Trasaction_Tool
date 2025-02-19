@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useProfileStore } from "@/utils/store";
-import { anyErrorToast } from "./errorToast";
+import { anyErrorToast } from "../../utils/errorToast";
 
 const PrivateKeyArea = () => {
     const { privateKey, setPrivateKey } = useProfileStore();

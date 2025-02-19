@@ -2,20 +2,21 @@ import { useEffect } from 'react';
 import Papa from 'papaparse';
 import { Button } from "@/components/ui/button";
 import { useMutation } from "react-query";
-import { tronCheckAddress, tronCheckEvent, tronSendTRC20_USDT } from './actions';
+import { tronCheckAddress, tronCheckEvent, tronSendTRC20_USDT } from '../tron/actions';
 import UploadContent from './UploadContent';
-import { anyErrorToast, privateKeyErrorToast } from './errorToast';
+import { anyErrorToast, privateKeyErrorToast } from '../../utils/errorToast';
 import { useProfileStore, useTransactionStore } from '@/utils/store';
 import { wait } from '@/utils/wait';
 
 
 const Uploader = () => {
-    const { senderAddress, apiKey, privateKey, network } = useProfileStore();
+    const { senderAddress, apiKey, privateKey, network, refresh } = useProfileStore();
     const { contents, setContents, results, setResults, records, setRecords, setTotalTransaction, setDoneTransaction, resetContents, resetCounter, resetTranStatus, counter, setCounter, isCounterStarted, setIsCounterStarted, setIsLoading } = useTransactionStore();
     useEffect(() => {
         if (isCounterStarted) {
             if (counter === 0) {
                 resetCounter();
+                refresh();
                 return;
             }
             const timer = setInterval(() => setCounter(counter - 1), 1000);
@@ -55,6 +56,7 @@ const Uploader = () => {
         setResults(resData);
         resetTranStatus();
         setIsLoading(false);
+        refresh();
         return;
     }
     const checkResult = async () => {
@@ -90,11 +92,11 @@ const Uploader = () => {
                 const items: any[] = [];
                 for await (let item of results.data) {
                     const res = await tronCheckAddress(item.ToAddress)
-                    if (res == "❌ This is a INVALID TRON account, please try other.") {
+                    if (!res) {
                         item.ToAddress.includes(" ") ?
-                            item.ToAddress = `${item.ToAddress} - INVALID TRON ACCOUNT (Check space)`
+                            item.ToAddress = `${item.ToAddress} - INVALID TRON ADDRESS (Check space)`
                             :
-                            item.ToAddress = `${item.ToAddress} - INVALID TRON ACCOUNT`;
+                            item.ToAddress = `${item.ToAddress} - INVALID TRON ADDRESS`;
 
                     }
                     item.USDT = await (item.USDT).replaceAll(",", "");
@@ -113,7 +115,7 @@ const Uploader = () => {
     }
     return (
         <section>
-            {contents.length <= 0 && records.length <= 0 ?
+            {contents.length <= 0 && records.length <= 0 &&
                 <>
                     <div>* Make sure to purchase or rent <strong>energy</strong> before initiating a TRC-20 transfer. Otherwise, the TRX will be burned. *</div>
                     <p>Energy Estimation Website: <a href="https://energyfather.com/tron-energy-calculator" target="_blank">www.energyfather.com</a></p>
@@ -143,8 +145,6 @@ const Uploader = () => {
                         </Button>
                     </div>
                 </>
-                :
-                <></>
             }
             <UploadContent
                 cancelUpload={cancelUpload}

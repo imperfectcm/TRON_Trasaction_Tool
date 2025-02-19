@@ -27,14 +27,14 @@ const UploadContent = (props: UploadContentProps) => {
             {contents.length > 0 && contents[0].ToAddress && results.length === 0 &&
                 <div>
                     <div className="grid lg:grid-cols-2 gap-2">
-                        <Button className='w-full h-16 text-2xl border-zinc-700 bg-zinc-800 text-zinc-300 my-5
+                        <Button className='w-full h-12 text-xl bg-zinc-800 text-zinc-300 my-5
                         hover:shadow-[0rem_0rem_0.7rem_#ff6c33] hover:border-transparent transition hover:duration-200'
                             onClick={cancelUpload} disabled={isLoading}>
                             Cancel
                         </Button>
                         <Dialog>
                             <DialogTrigger asChild>
-                                <Button className='w-full h-16 text-2xl border-zinc-700 bg-zinc-800 text-zinc-300 my-5
+                                <Button className='w-full h-12 text-xl bg-zinc-800 text-zinc-300 my-5
                                 hover:shadow-[0rem_0rem_0.7rem_#ff6c33] hover:border-transparent transition hover:duration-200'
                                     disabled={isLoading}
                                 >
@@ -90,30 +90,30 @@ const UploadContent = (props: UploadContentProps) => {
 
             {results.length > 0 && results[0].txID &&
                 <>
-                    <div className="w-full text-2xl font-semibold">Results:</div>
-                    <div className="w-full grid grid-cols-6 gap-x-2 text-xl font-semibold mt-5">
+                    <div className="w-full text-xl font-semibold">Results:</div>
+                    <div className="w-full grid grid-cols-6 gap-x-2 font-semibold mt-5">
                         <p className="col-span-1 mt-2 truncate text-center">ID:</p>
                         <p className="col-span-1 mt-2 truncate text-center">Receiver Address::</p>
                         <p className="col-span-1 mt-2 truncate text-center">Amount (USDT):</p>
-                        <p className="col-span-2 mt-2 truncate text-center">Record TxID:</p>
+                        <p className="col-span-2 mt-2 truncate text-center">Reference TxID:</p>
                         <p className="col-span-1 mt-2 truncate text-center">Status:</p>
                     </div>
                 </>
             }
             {results.length > 0 && results.map((item, i) =>
                 item.txID ?
-                    <div className="grid grid-cols-6 gap-x-2 border-t-2" key={i}>
+                    <div className="grid grid-cols-6 gap-x-2 border-t-2 text-sm" key={i}>
                         <p className="col-span-1 mt-2 truncate text-center">{item.id && item.id}</p>
                         <p className="col-span-1 mt-2 truncate text-center">{item.receiver && item.receiver}</p>
                         <p className="col-span-1 mt-2 truncate text-center">{item.amount && item.amount}</p>
                         <p className="relative col-span-2 mt-2 px-7 truncate text-center">
-                            <span className="relative">
-                                {item.txID && item.txID}
+                            <span className="relative flex">
+                                <a target="_blank" href={`https://tronscan.org/#/transaction/${item.txID}`} className="text-orange-200 hover:text-orange-500">{item.txID && item.txID}</a>
                                 <span className="absolute h-full left-0 top-0 -translate-x-7">
-                                    <Button className="p-[0.2rem] h-full bg-neutral-600"
+                                    <div className="p-[0.2rem] h-full cursor-pointer text-zinc-600 active:text-zinc-400"
                                         onClick={() => { navigator.clipboard.writeText(item.txID) }}>
                                         <Copy size={16} strokeWidth={1.25} />
-                                    </Button>
+                                    </div>
                                 </span>
                             </span>
                         </p>
@@ -131,12 +131,12 @@ const UploadContent = (props: UploadContentProps) => {
             {
                 results.length > 0 && results[0].txID &&
                 <div className="w-full grid grid-cols-2 gap-3">
-                    <Button className='bg-[dark-bg] w-full h-16 text-xl border-zinc-700 bg-zinc-800 text-zinc-300 mt-10
+                    <Button className='bg-[dark-bg] w-full h-12 text-xl border-zinc-700 bg-zinc-800 text-zinc-300 mt-10
                     hover:shadow-[0rem_0rem_0.7rem_#ff6c33] hover:border-transparent transition hover:duration-200'
                         onClick={resetContents}>
                         Clear
                     </Button>
-                    <Button className='bg-[dark-bg] w-full h-16 text-xl border-zinc-700 bg-zinc-800 text-zinc-300 mt-10
+                    <Button className='bg-[dark-bg] w-full h-12 text-xl border-zinc-700 bg-zinc-800 text-zinc-300 mt-10
                     hover:shadow-[0rem_0rem_0.7rem_#ff6c33] hover:border-transparent transition hover:duration-200'
                         onClick={submitCheck} disabled={isCounterStarted}>
                         {!isChecking ?

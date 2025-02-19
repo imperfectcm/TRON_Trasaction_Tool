@@ -1,7 +1,6 @@
 import { useWallet, WalletProvider } from '@tronweb3/tronwallet-adapter-react-hooks';
 import { WalletModalProvider, WalletActionButton } from '@tronweb3/tronwallet-adapter-react-ui';
 // This is necessary to keep style normal.
-import './adapter.css';
 import { WalletDisconnectedError, WalletError, WalletNotFoundError } from '@tronweb3/tronwallet-abstract-adapter';
 import toast from 'react-hot-toast';
 import { useEffect } from 'react';
