@@ -46,7 +46,7 @@ const Uploader = () => {
                     setDoneTransaction(id);
                 }
             } catch (error: any) {
-                console.log(error);
+                console.error(error);
                 anyErrorToast(error.message);
                 setIsLoading(false);
                 return;
@@ -72,7 +72,7 @@ const Uploader = () => {
             }
             setRecords(transRecord);
         } catch (error: any) {
-            console.log(error);
+            console.error(error);
             anyErrorToast(error.message);
         }
         return;

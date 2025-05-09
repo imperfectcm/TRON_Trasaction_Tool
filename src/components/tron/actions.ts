@@ -103,7 +103,7 @@ export const tronSendTRC20_USDT = async (senderAddr: string, recipientAddr: stri
         const response = { created: res.result, code: res.code, txID: res.txid }
         return response;
     } catch (error: any) {
-        console.log(error);
+        console.error(error);
         if (error.response.data.Error) { anyErrorToast(error.response.data.Error); } else { anyErrorToast("Some setting might be wrong"); }
         return { created: undefined, code: undefined, txID: undefined };
     }

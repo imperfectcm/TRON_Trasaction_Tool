@@ -26,7 +26,7 @@ const FunctionBtn = () => {
             const res = await tronGetBalance_USDT(senderAddress, apiKey, privateKey, network);
             container.setBalanceRes(`Available account balance: ${res} USDT`);
         } catch (error: any) {
-            console.log(error);
+            console.error(error);
             anyErrorToast(error.message);
         }
         return;
